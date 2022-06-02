@@ -65,9 +65,11 @@ Item {
     }
 
     Connections {
-        target: units.iconSizeHints
+        target: units != null ? units.iconSizeHints : null
 
-        onPanelChanged: updateSizeHints()
+        function onPanelChanged() {
+            updateSizeHints();
+        }
     }
 
     PlasmaCore.IconItem {

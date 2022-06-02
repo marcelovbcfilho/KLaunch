@@ -2,8 +2,8 @@
     "KPlugin": {
         "Authors": [
             {
-                "Email": "adhemarks@gmail.com",
-                "Name": "Adhe"
+                "Email": "marcelovbcfilho@gmail.com",
+                "Name": "marcelovbcfilho"
             }
         ],
         "Category": "Application Launchers",
@@ -11,10 +11,10 @@
         "Description[x-test]": "xxA configurable grid launcher menuxx",
         "EnabledByDefault": true,
         "Icon": "start-here-kde",
-        "Id": "launchpadPlasmaDark",
+        "Id": "kLaunch",
         "License": "GPL-2.0+",
-        "Name": "Launchpad Plasma Dark",
-        "Name[x-test]": "xxLaunchpad Plasma Darkxx",
+        "Name": "KLaunch",
+        "Name[x-test]": "xxKLaunchxx",
         "ServiceTypes": [
             "Plasma/Applet"
         ],

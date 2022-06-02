@@ -19,7 +19,7 @@
 
 import QtQuick 2.4
 
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.components 3.0
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.kquickcontrolsaddons 2.0
 import org.kde.draganddrop 2.0
@@ -49,9 +49,6 @@ FocusScope {
 
     property alias cellWidth: gridView.cellWidth
     property alias cellHeight: gridView.cellHeight
-
-    property alias horizontalScrollBarPolicy: scrollArea.horizontalScrollBarPolicy
-    property alias verticalScrollBarPolicy: scrollArea.verticalScrollBarPolicy
 
     property alias hoverEnabled: mouseArea.hoverEnabled
 
@@ -142,14 +139,12 @@ FocusScope {
             }
         }
 
-        PlasmaExtras.ScrollArea {
+        ScrollView {
             id: scrollArea
-
             anchors.fill: parent
-
             focus: true
 
-            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+            ScrollBar.vertical.policy: ScrollBar.AlwaysOff
 
             GridView {
                 id: gridView
@@ -160,7 +155,7 @@ FocusScope {
                 property int animationDuration: dragEnabled ? units.longDuration : 0
 
                 focus: true
-                visible: model.count > 0
+                visible: true
                 //enabled: visible    
                 currentIndex: -1
 
@@ -203,7 +198,6 @@ FocusScope {
                     showLabel: showLabels
                 }
 
-                highlight: PlasmaComponents.Highlight {}
                 highlightFollowsCurrentItem: true
                 highlightMoveDuration: 0
 

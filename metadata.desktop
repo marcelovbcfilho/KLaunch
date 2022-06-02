@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Launchpad Plasma Dark
+Name=KLaunch
 Comment=A configurable grid launcher menu
 
 Type=Service
@@ -10,9 +10,9 @@ X-Plasma-API=declarativeappletscript
 X-Plasma-MainScript=ui/main.qml
 X-Plasma-Provides=org.kde.plasma.launchermenu
 
-X-KDE-PluginInfo-Author=adhe
-X-KDE-PluginInfo-Email=adhemarks@gmail.com
-X-KDE-PluginInfo-Name=launchpadPlasmaDark
+X-KDE-PluginInfo-Author=marcelovbcfilho
+X-KDE-PluginInfo-Email=marcelovbcfilho@gmail.com
+X-KDE-PluginInfo-Name=KLaunch
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Category=Application Launchers
 X-KDE-PluginInfo-Depends=

@@ -18,21 +18,19 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-import QtQuick 2.4
+import QtQuick 2.15
 import QtQuick.Controls 2.0
 
 import QtQuick.Layouts 1.1
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.components 3.0
 import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.plasma.private.kicker 0.1 as Kicker
 
 import "../code/tools.js" as Tools
 import QtQuick.Window 2.0
 import QtQuick.Controls.Styles 1.4
-//import QtQuick.Controls 2.15
-import org.kde.plasma.components 3.0 as PlasmaComponents3
 
 
 Kicker.DashboardWindow {
@@ -114,35 +112,6 @@ Kicker.DashboardWindow {
         anchors.fill: parent
         color: 'transparent'
 
-        Image {
-            source: "br.png"
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            visible: plasmoid.configuration.showRoundedCorners
-            z:2
-        }
-        Image {
-            source: "bl.png"
-            anchors.left: parent.left
-            anchors.bottom: parent.bottom
-            visible: plasmoid.configuration.showRoundedCorners
-            z:2
-        }
-        Image {
-            source: "tr.png"
-            anchors.right: parent.right
-            anchors.top: parent.top
-            visible: plasmoid.configuration.showRoundedCorners
-            z:2
-        }
-        Image {
-            source: "tl.png"
-            anchors.left: parent.left
-            anchors.top: parent.top
-            visible: plasmoid.configuration.showRoundedCorners
-            z:2
-        }
-
         ScaleAnimator{
             id: animationSearch
             from: 1.1
@@ -151,8 +120,8 @@ Kicker.DashboardWindow {
         }
 
         MouseArea {
-
             id: rootMouseArea
+
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
@@ -170,6 +139,7 @@ Kicker.DashboardWindow {
 
             PlasmaExtras.Heading {
                 id: dummyHeading
+
                 visible: false
                 width: 0
                 level: 5
@@ -177,101 +147,117 @@ Kicker.DashboardWindow {
 
             TextMetrics {
                 id: headingMetrics
+
                 font: dummyHeading.font
             }
 
             ActionMenu {
                 id: actionMenu
+
                 onActionClicked: visualParent.actionTriggered(actionId, actionArgument)
+
                 onClosed: {
                     if (pageList.currentItem) {
                         pageList.currentItem.itemGrid.currentIndex = -1;
                     }
                 }
             }
-            Rectangle{
-                anchors.centerIn: searchField
-                width: searchField.width + 2
-                height: searchField.height + 2
-                color: colorWithAlpha(theme.textColor, 0.15)
-                radius: 6
-                //border.color: "#aa909090"//theme.highlightColor #TODO settings
-                //border.width: 0
-            }
 
-            PlasmaComponents.TextField {
-                id: searchField
+            Rectangle{
+                id: searchFieldRectangle
 
                 anchors.top: parent.top
                 anchors.topMargin: units.iconSizes.large
                 anchors.horizontalCenter: parent.horizontalCenter
-                width: units.gridUnit * 18
-                font.pointSize: Math.ceil(dummyHeading.font.pointSize) + 3
-                style: TextFieldStyle {
-                    textColor: theme.textColor
-                    background: Rectangle {
-                        opacity: 0
-                    }
-                }
-                placeholderText: i18n("<font color='"+colorWithAlpha(theme.textColor,0.5) +"'>Search</font>")
-                horizontalAlignment: TextInput.AlignHCenter
-                onTextChanged: {
-                    runnerModel.query = text;
-                }
 
-                Keys.onPressed: {
-                    if (event.key == Qt.Key_Down || (event.key == Qt.Key_Right && cursorPosition == length)) {
-                        event.accepted = true;
-                        pageList.currentItem.itemGrid.tryActivate(0, 0);
-                    } else if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
-                        if (text != "" && pageList.currentItem.itemGrid.count > 0) {
-                            event.accepted = true;
-                            if(pageList.currentItem.itemGrid.currentIndex == -1) {
-                                pageList.currentItem.itemGrid.tryActivate(0, 0);
-                            }
-                            pageList.currentItem.itemGrid.model.trigger(pageList.currentItem.itemGrid.currentIndex, "", null);
-                            root.toggle();
+                width: units.gridUnit * 14
+                height: searchField.height + units.gridUnit / 2
+                color: colorWithAlpha(theme.textColor, 0.15)
+                radius: 6
+
+                border.color: theme.highlightColor
+
+                Row {
+                    id: searchFieldRow
+
+                    anchors.centerIn: parent
+
+                    TextField {
+                        id: searchField
+
+                        width: units.gridUnit * 14
+                        font.pointSize: Math.ceil(dummyHeading.font.pointSize) + 3
+                        onTextChanged: {
+                            runnerModel.query = text;
                         }
-                    } else if (event.key == Qt.Key_Tab) {
-                        event.accepted = true;
-                        pageList.currentItem.itemGrid.tryActivate(0, 0);
-                    } else if (event.key == Qt.Key_Backtab) {
-                        event.accepted = true;
-                        pageList.currentItem.itemGrid.tryActivate(0, 0);
 
+                        horizontalAlignment: TextInput.AlignHCenter
+                        background: Item {
+                            opacity: 0
+                        }
+
+                        Keys.onPressed: {
+                            if (event.key == Qt.Key_Down || (event.key == Qt.Key_Right && cursorPosition == length)) {
+                                event.accepted = true;
+                                pageList.currentItem.itemGrid.tryActivate(0, 0);
+                            } else if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
+                                if (text != "" && pageList.currentItem.itemGrid.count > 0) {
+                                    event.accepted = true;
+                                    if(pageList.currentItem.itemGrid.currentIndex == -1) {
+                                        pageList.currentItem.itemGrid.tryActivate(0, 0);
+                                    }
+                                    pageList.currentItem.itemGrid.model.trigger(pageList.currentItem.itemGrid.currentIndex, "", null);
+                                    root.toggle();
+                                }
+                            } else if (event.key == Qt.Key_Tab) {
+                                event.accepted = true;
+                                pageList.currentItem.itemGrid.tryActivate(0, 0);
+                            } else if (event.key == Qt.Key_Backtab) {
+                                event.accepted = true;
+                                pageList.currentItem.itemGrid.tryActivate(0, 0);
+
+                            }
+                        }
+
+                        function backspace() {
+                            if (!root.visible) {
+                                return;
+                            }
+                            focus = true;
+                            text = text.slice(0, -1);
+
+                        }
+
+                        function appendText(newText) {
+                            if (!root.visible) {
+                                return;
+                            }
+                            focus = true;
+                            text = text + newText;
+                        }
                     }
                 }
 
-                function backspace() {
-                    if (!root.visible) {
-                        return;
+                Row {
+                    anchors.centerIn: parent
+
+                    PlasmaCore.IconItem {
+                        id: searchFieldIconItem
+                        
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        source: "nepomuk"
+                        visible: runnerModel.query.length == 0
+                        width:  searchField.height
+                        height: searchField.height / 2
                     }
-                    focus = true;
-                    text = text.slice(0, -1);
 
-                }
-
-                function appendText(newText) {
-                    if (!root.visible) {
-                        return;
+                    Label {
+                        text: i18n("<font color='"+colorWithAlpha(theme.textColor,0.5) +"'>Search</font>")
+                        visible: runnerModel.query.length == 0
+                        height: searchField.height
                     }
-                    focus = true;
-                    text = text + newText;
                 }
-            }
-
-            PlasmaCore.IconItem {
-                id: nepomunk
-                source: "nepomuk"
-                visible: true
-                width:  searchField.height - 2
-                height: width
-                anchors {
-                    left: searchField.left
-                    leftMargin: 10
-                    verticalCenter: searchField.verticalCenter
-                }
-
             }
 
 
@@ -286,14 +272,13 @@ Kicker.DashboardWindow {
                     verticalCenter: parent.verticalCenter
                     horizontalCenter: parent.horizontalCenter
                 }
-                PlasmaExtras.ScrollArea {
+                ScrollView {
                     id: pageListScrollArea
                     width: parent.width
                     height: parent.height
                     focus: true;
-                    frameVisible: false;
-                    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-                    verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                     ListView {
                         id: pageList
@@ -311,7 +296,7 @@ Kicker.DashboardWindow {
                             Rectangle {
                                 width: widthScreen; height: heightScreen
                                 color: "transparent"
-                                x: pageList.currentItem.x
+                                x: pageList.currentItem != null ? pageList.currentItem.x : 0
                                 Behavior on x { PropertyAnimation {
                                         duration: plasmoid.configuration.scrollAnimationDuration
                                         easing.type: Easing.OutCubic
@@ -408,9 +393,6 @@ Kicker.DashboardWindow {
                                 cellWidth:  cellSizeWidth
                                 cellHeight: cellSizeHeight
 
-                                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-                                verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
                                 dragEnabled: (index == 0) && plasmoid.configuration.showFavorites
 
                                 model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(0).modelForRow(index)
@@ -467,182 +449,83 @@ Kicker.DashboardWindow {
                     }
                 }
 
-            }
+                ListView {
+                    id: paginationBar
 
-            Rectangle{
-                width: gridViewFavorites.width + units.smallSpacing*2
-                height: gridViewFavorites.height
-                anchors.centerIn: gridViewFavorites
-                color: colorWithAlpha(theme.backgroundColor, 0.3)
-                radius: 8 // TODO: from settings
-                border.color: "#aa808080" // TODO: from settings
-                border.width: 1
-                visible: plasmoid.configuration.showFavorites
-            }
-
-            ItemGridView {
-                id: gridViewFavorites
-                visible: plasmoid.configuration.showFavorites
-
-                anchors {
-                    bottom: parent.bottom
-                    bottomMargin: units.smallSpacing * 2
-                    horizontalCenter: parent.horizontalCenter
-                }
-                focus: true
-                width: globalFavorites.count * cellWidth > root.widthScreen * 0.8  ? root.widthScreen * 0.8 : globalFavorites.count * cellWidth
-                height: root.iconSizeFavorites + units.largeSpacing
-
-                usesPlasmaTheme: false
-                cellWidth: height + units.smallSpacing
-                cellHeight: height
-                iconSize: root.iconSizeFavorites
-                showLabels: false
-                horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-                verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
-                model: globalFavorites
-
-                onKeyNavDown: {
-                    documentsFavoritesGrid.tryActivate(0,0)
-                }
-
-                Keys.onPressed: {
-                    if (event.key == Qt.Key_Backspace) {
-                        event.accepted = true;
-                        searchField.backspace();
-                    } else if (event.key == Qt.Key_Tab) {
-                        event.accepted = true;
-                        documentsFavoritesGrid.tryActivate(0,0);
-                    } else if (event.key == Qt.Key_Escape) {
-                        event.accepted = true;
-                        if(searching){
-                            searchField.clear()
-                        } else {
-                            root.visible = false;
-                        }
-                    } else if (event.text != "") {
-                        event.accepted = true;
-                        searchField.appendText(event.text);
+                    anchors {
+                        bottom: parent.bottom
+                        bottomMargin: units.gridUnit * -2
+                        horizontalCenter: parent.horizontalCenter
                     }
+                    width: model.count * units.iconSizes.smallMedium
+                    height:  units.largeSpacing
+                    orientation: Qt.Horizontal
 
-                }
-            }
-
-            Rectangle{
-                id: buttonPower
-                anchors {
-                    right: parent.right
-                    top: parent.top
-                    margins: 2
-                }
-                width: units.iconSizes.large
-                height: width
-                visible: plasmoid.configuration.showSystemActions
-                radius: width*0.5
-                color:  buttonPowerMouseArea.containsMouse ? theme.highlightColor : 'transparent'
-
-                PlasmaCore.IconItem {
-                    anchors.centerIn: parent
-                    width: units.iconSizes.smallMedium
-                    source: "system-shutdown"
-                }
-
-                ToolTip {
-                    parent: buttonPower
-                    visible: buttonPowerMouseArea.containsMouse
-                    text: 'Leave ...'
-                }
-
-                MouseArea {
-                    id: buttonPowerMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked:  { pmEngine.performOperation("requestShutDown"); root.toggle();}
-                }
-            }
-
-            Rectangle{
-                id: buttonLock
-                anchors{
-                    top: buttonPower.bottom
-                    right: buttonPower.right
-                }
-                width: units.iconSizes.large
-                height: width
-                visible: plasmoid.configuration.showSystemActions && pmEngine.data["Sleep States"]["LockScreen"]
-                radius: width*0.5
-                color:  buttonLockMouseArea.containsMouse ? theme.highlightColor : 'transparent'
-
-                PlasmaCore.IconItem {
-                    anchors.centerIn: parent
-                    width: units.iconSizes.smallMedium
-                    source: "system-lock-screen"
-                }
-
-                ToolTip {
-                    parent: buttonLock
-                    visible: buttonLockMouseArea.containsMouse
-                    text: 'Lock Screen'
-                }
-
-                MouseArea {
-                    id: buttonLockMouseArea
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: { pmEngine.performOperation("lockScreen"); root.toggle();}
-                }
-            }
-
-
-
-            ListView {
-                id: paginationBar
-
-                anchors {
-                    right: parent.right
-                    rightMargin: units.largeSpacing
-                    verticalCenter: parent.verticalCenter
-                }
-                height: model.count * units.iconSizes.smallMedium
-                width:  units.largeSpacing
-                orientation: Qt.Vertical
-
-                delegate: Item {
-                    width: units.iconSizes.small
-                    height: width
-
-                    Rectangle {
-                        id: pageDelegate
-                        anchors {
-                            horizontalCenter: parent.horizontalCenter
-                            verticalCenter: parent.verticalCenter
-                            margins: 10
-                        }
-                        width: parent.width  * 0.7
+                    delegate: Item {
+                        width: units.iconSizes.small
                         height: width
 
-                        property bool isCurrent: (pageList.currentIndex == index)
-
-                        radius: width / 2
-                        color: theme.textColor
-                        visible: index != 0 // (showFavorites || searching) ? true : (index != 0)
-                        opacity: 0.5
-                        Behavior on width { SmoothedAnimation { duration: units.longDuration; velocity: 0.01 } }
-                        Behavior on opacity { SmoothedAnimation { duration: units.longDuration; velocity: 0.01 } }
-
-                        states: [
-                            State {
-                                when: pageDelegate.isCurrent
-                                PropertyChanges { target: pageDelegate; width: parent.width - (units.smallSpacing * 1.75) }
-                                PropertyChanges { target: pageDelegate; opacity: 1 }
+                        Rectangle {
+                            id: pageDelegate
+                            anchors {
+                                horizontalCenter: parent.horizontalCenter
+                                verticalCenter: parent.verticalCenter
+                                margins: 10
                             }
-                        ]
-                    }
+                            width: parent.width  * 0.5
+                            height: width
 
-                    MouseArea {
-                        anchors.fill: parent
-                        onClicked: pageList.currentIndex = index;
+                            property bool isCurrent: (pageList.currentIndex == index)
+
+                            radius: width / 2
+                            color: Qt.rgba(255,255,255, 1)
+                            visible: (index != 0)
+                            opacity: 0.5
+                            Behavior on opacity { SmoothedAnimation { duration: units.longDuration; velocity: 0.01 } }
+
+                            states: [
+                                State {
+                                    when: pageDelegate.isCurrent
+                                    PropertyChanges { target: pageDelegate; opacity: 1 }
+                                }
+                            ]
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: pageList.currentIndex = index;
+
+                            property int wheelDelta: 0
+
+                            function scrollByWheel(wheelDelta, eventDelta) {
+                                // magic number 120 for common "one click"
+                                // See: http://qt-project.org/doc/qt-5/qml-qtquick-wheelevent.html#angleDelta-prop
+                                wheelDelta += eventDelta;
+
+                                var increment = 0;
+
+                                while (wheelDelta >= 50) {
+                                    wheelDelta -= 50;
+                                    increment++;
+                                }
+
+                                while (wheelDelta <= -50) {
+                                    wheelDelta += 50;
+                                    increment--;
+                                }
+
+                                while (increment != 0) {
+                                    pageList.activateNextPrev(increment < 0);
+                                    increment += (increment < 0) ? 1 : -1;
+                                }
+
+                                return wheelDelta;
+                            }
+
+                            onWheel: {
+                                wheelDelta = scrollByWheel(wheelDelta, wheel.angleDelta.y,wheel.angleDelta.x);
+                            }
+                        }
                     }
                 }
             }
