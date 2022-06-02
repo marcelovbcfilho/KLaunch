@@ -4,7 +4,7 @@ Launchpad like widget for KDE
 
 ### Previews: 
 
-![Image of ditto](https://github.com/marcelovbcfilho/klaunch/blob/master/preview.jpg)
+![Image of ditto](https://github.com/marcelovbcfilho/klaunch/blob/master/preview.png)
 
 ### Coffee
 
