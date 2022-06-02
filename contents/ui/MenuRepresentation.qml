@@ -29,7 +29,7 @@ import org.kde.plasma.extras 2.0 as PlasmaExtras
 import org.kde.plasma.private.kicker 0.1 as Kicker
 
 import "../code/tools.js" as Tools
-import QtQuick.Window 2.0
+import QtQuick.Window 2.15
 import QtQuick.Controls.Styles 1.4
 
 

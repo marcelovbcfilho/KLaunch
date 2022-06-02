@@ -39,17 +39,12 @@ Kirigami.FormLayout {
     property bool cfg_useCustomButtonImage:     plasmoid.configuration.useCustomButtonImage
     property string cfg_customButtonImage:      plasmoid.configuration.customButtonImage
     property alias cfg_iconSize:                iconSize.value
-    property alias cfg_iconSizeFavorites:       iconSizeFavorites.value
     property alias cfg_spaceWidth:              spaceWidth.value
     property alias cfg_spaceHeight:             spaceHeight.value
     property alias cfg_backgroundOpacity:       backgroundOpacity.value
     property alias cfg_useCustomSizeGrid:       useCustomSizeGrid.checked
     property alias cfg_numberColumns:           numberColumns.value
     property alias cfg_numberRows:              numberRows.value
-    property alias cfg_showFavorites:           showFavorites.checked
-    //property alias cfg_startOnFavorites:        startOnFavorites.checked
-    property alias cfg_showSystemActions:       showSystemActions.checked
-    property alias cfg_systemActionIconSize:    systemActionIconSize.value
     property alias cfg_scrollAnimationDuration: scrollAnimationDuration.value
     property alias cfg_showBackLabels:          showBackLabels.checked
     property alias cfg_showRoundedCorners:      showRoundedCorners.checked
@@ -184,19 +179,6 @@ Kirigami.FormLayout {
     RowLayout{
         Layout.fillWidth: true
         Label {
-            text: i18n("Size of favorites icons:")
-            Layout.minimumWidth: 200
-        }
-        SpinBox{
-            id: iconSizeFavorites
-            minimumValue: 24
-            maximumValue: 256
-            stepSize: 4
-        }
-    }
-    RowLayout{
-        Layout.fillWidth: true
-        Label {
             text: i18n("Space between columns:")
             Layout.minimumWidth: 200
         }
@@ -307,71 +289,6 @@ Kirigami.FormLayout {
             }
         }
     }
-
-    
-    // ----------------- Favorites -----------------
-    Item {
-        Kirigami.FormData.isSection: true
-    }
-    CheckBox{
-        Kirigami.FormData.label: i18n("Favorite Applications:")
-
-        id: showFavorites
-        text:  i18n("Show favorites")
-        //onClicked: {
-        //    startOnFavorites.checked = checked;
-        //}
-    }
-
-    //RowLayout{
-    //    spacing: units.smallSpacing
-    //    enabled: showFavorites.checked
-    //    CheckBox{
-    //        id: startOnFavorites
-    //        text:  i18n("Start on favorites page")
-    //    }
-    //}
-    // ----------------- System Actions -----------------
-    Item {
-        Kirigami.FormData.isSection: true
-    }
-    CheckBox{
-        Kirigami.FormData.label: i18n("System Actions:")
-
-        id: showSystemActions
-        text:  i18n("Show system actions")
-    }
-    RowLayout{
-        Layout.fillWidth: true
-        enabled: showSystemActions.checked
-        visible: false
-        Label {
-            text: i18n("Size of system actions icons:")
-        }
-        SpinBox{
-            id: systemActionIconSize
-            minimumValue: 24
-            maximumValue: 128
-            stepSize: 4
-        }
-    }
-    RowLayout{
-        visible: false
-        Layout.fillWidth: true
-        enabled: showSystemActions.checked
-        Button {
-            enabled: showSystemActions.checked
-            text: i18n("Unhide all system actions")
-            onClicked: {
-                plasmoid.configuration.favoriteSystemActions = ["lock-screen", "switch-user", "suspend", "logout", "reboot", "shutdown"];
-                unhideSystemActionsPopup.text = i18n("Unhidden!");
-            }
-        }
-        Label {
-            id: unhideSystemActionsPopup
-        }
-    }
-
     
     // ----------------- Other -----------------
     Item {
