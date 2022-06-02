@@ -19,9 +19,6 @@
     <entry name="iconSize" type="Int">
       <default>64</default>
     </entry>
-    <entry name="iconSizeFavorites" type="Int">
-      <default>56</default>
-    </entry>
     <entry name="spaceWidth" type="Int">
       <default>76</default>
     </entry>
@@ -46,13 +43,6 @@
     <entry name="numberRows" type="Int">
       <default>5</default>
     </entry>
-    <entry name="showFavorites" type="Bool">
-      <default>true</default>
-    </entry>
-
-    <!--<entry name="startOnFavorites" type="Bool">
-      <default>false</default>
-    </entry>-->
 
     <entry name="showSystemActions" type="Bool">
       <default>true</default>
@@ -67,12 +57,6 @@
     <entry name="appNameFormat" type="Int">
       <default>0</default>
     </entry>
-    <entry name="favoriteApps" type="StringList">
-      <default></default>
-    </entry>
-    <entry name="favoriteSystemActions" type="StringList">
-      <default>logout,reboot,shutdown</default>
-    </entry>
     <entry name="hiddenApplications" type="StringList">
       <default></default>
     </entry>
@@ -81,10 +65,6 @@
     </entry>
     <entry name="extraRunners" type="StringList">
       <default>bookmarks,baloosearch</default>
-    </entry>
-    <entry name="favoritesPortedToKAstats" type="Bool">
-      <label>Are the favorites ported to use KActivitiesStats to allow per-activity favorites</label>
-      <default>false</default>
     </entry>
   </group>
 </kcfg>

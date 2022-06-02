@@ -42,8 +42,6 @@ Item {
 
     property Item dragSource: null
 
-    property QtObject globalFavorites: rootModel.favoritesModel
-    property QtObject systemFavorites: rootModel.systemFavoritesModel
 
     function action_menuedit() {
         processRunner.runMenuEditor();
@@ -77,68 +75,13 @@ Item {
         showRecentContacts: false
         showPowerSession: false
 
-        onFavoritesModelChanged: {
-            if ("initForClient" in favoritesModel) {
-                favoritesModel.initForClient("org.kde.plasma.kicker.favorites.instance-" + plasmoid.id)
-
-                if (!plasmoid.configuration.favoritesPortedToKAstats) {
-                    favoritesModel.portOldFavorites(plasmoid.configuration.favoriteApps);
-                    plasmoid.configuration.favoritesPortedToKAstats = true;
-                }
-            } else {
-                favoritesModel.favorites = plasmoid.configuration.favoriteApps;
-            }
-
-            favoritesModel.maxFavorites = pageSize;
-        }
-
-        onSystemFavoritesModelChanged: {
-            systemFavoritesModel.enabled = true;
-            systemFavoritesModel.favorites = plasmoid.configuration.favoriteSystemActions;
-            systemFavoritesModel.maxFavorites = 8;
-        }
-
         Component.onCompleted: {
-            if ("initForClient" in favoritesModel) {
-                favoritesModel.initForClient("org.kde.plasma.kicker.favorites.instance-" + plasmoid.id)
-                if (!plasmoid.configuration.favoritesPortedToKAstats) {
-                    favoritesModel.portOldFavorites(plasmoid.configuration.favoriteApps);
-                    plasmoid.configuration.favoritesPortedToKAstats = true;
-                }
-            } else {
-                favoritesModel.favorites = plasmoid.configuration.favoriteApps;
-            }
-            favoritesModel.maxFavorites = pageSize;
             rootModel.refresh();
         }
     }
 
     Connections {
-        target: globalFavorites
-
-        function onFavoritesChanged() {
-            plasmoid.configuration.favoriteApps = target.favorites;
-        }
-    }
-
-    Connections {
-        target: systemFavorites
-
-        function onFavoritesChanged() {
-            plasmoid.configuration.favoriteSystemActions = target.favorites;
-        }
-    }
-
-    Connections {
         target: plasmoid.configuration
-
-        function onFavoriteAppsChanged() {
-            globalFavorites.favorites = plasmoid.configuration.favoriteApps;
-        }
-
-        function onFavoriteSystemActionsChanged() {
-            systemFavorites.favorites = plasmoid.configuration.favoriteSystemActions;
-        }
 
         function onHiddenApplicationsChanged() {
             // Force refresh on hidden
@@ -148,7 +91,6 @@ Item {
 
     Kicker.RunnerModel {
         id: runnerModel
-        favoritesModel: globalFavorites
         runners: {
                     var runners = ["services", "krunner_systemsettings"]
 

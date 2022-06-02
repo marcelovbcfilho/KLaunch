@@ -38,15 +38,14 @@ Item {
     readonly property int itemIndex: model.index
     readonly property url url: model.url != undefined ? model.url : ""
     property bool pressed: false
-    readonly property bool hasActionList: ((model.favoriteId != null)
-                                           || (("hasActionList" in model) && (model.hasActionList == true)))
+    readonly property bool hasActionList: (("hasActionList" in model) && (model.hasActionList == true))
 
     Accessible.role: Accessible.MenuItem
     Accessible.name: model.display
 
     function openActionMenu(x, y) {
         var actionList = hasActionList ? model.actionList : [];
-        Tools.fillActionMenu(i18n, actionMenu, actionList, GridView.view.model.favoritesModel, model.favoriteId);
+        Tools.fillActionMenu(i18n, actionMenu, model.actionList);
         actionMenu.visualParent = item;
         actionMenu.open(x, y);
     }

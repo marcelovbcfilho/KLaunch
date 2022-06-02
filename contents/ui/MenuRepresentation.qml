@@ -38,7 +38,6 @@ Kicker.DashboardWindow {
     id: root
 
     property int iconSize:    plasmoid.configuration.iconSize
-    property int iconSizeFavorites:    plasmoid.configuration.iconSizeFavorites
     property int spaceWidth:  plasmoid.configuration.spaceWidth
     property int spaceHeight: plasmoid.configuration.spaceHeight
     property int cellSizeWidth: spaceWidth + iconSize + theme.mSize(theme.defaultFont).height
@@ -62,8 +61,7 @@ Kicker.DashboardWindow {
     property int gridNumRows:  plasmoid.configuration.useCustomSizeGrid ? plasmoid.configuration.numberRows : Math.floor(height * 0.8  /  cellSizeHeight)
     property int widthScreen:  gridNumCols * cellSizeWidth
     property int heightScreen: gridNumRows * cellSizeHeight
-    property bool showFavorites: plasmoid.configuration.showFavorites
-    property int startIndex: 1 //(showFavorites && plasmoid.configuration.startOnFavorites) ? 0 : 1
+    property int startIndex: 0
 
     function colorWithAlpha(color, alpha) {
         return Qt.rgba(color.r, color.g, color.b, alpha)
@@ -286,9 +284,6 @@ Kicker.DashboardWindow {
                         snapMode: ListView.SnapOneItem
                         orientation: Qt.Horizontal
 
-
-                        //highlightMoveDuration : plasmoid.configuration.scrollAnimationDuration
-                        //highlightMoveVelocity: -1
                         highlightFollowsCurrentItem: false
                         highlightRangeMode : ListView.StrictlyEnforceRange
                         highlight: Component {
@@ -360,7 +355,7 @@ Kicker.DashboardWindow {
                             } else {
                                 var newIndex = pageList.currentIndex - 1;
 
-                                if (newIndex >= (showFavorites ? 0 : 1)) {
+                                if (newIndex >= 1) {
                                     pageList.currentIndex = newIndex;
                                 }
                             }
@@ -379,7 +374,7 @@ Kicker.DashboardWindow {
 
                             property Item itemGrid: gridView
 
-                            visible: (showFavorites || searching) ? true : (index != 0)
+                            visible: (searching) ? true : (index != 0)
 
                             ItemGridView {
                                 id: gridView
@@ -393,7 +388,7 @@ Kicker.DashboardWindow {
                                 cellWidth:  cellSizeWidth
                                 cellHeight: cellSizeHeight
 
-                                dragEnabled: (index == 0) && plasmoid.configuration.showFavorites
+                                dragEnabled: index == 0
 
                                 model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(0).modelForRow(index)
                                 onCurrentIndexChanged: {
@@ -408,14 +403,12 @@ Kicker.DashboardWindow {
                                         if (searching) {
                                             currentIndex = 0;
                                         } else if (count == 0) {
-                                            root.showFavorites = false;
                                             root.startIndex = 1;
                                             if (pageList.currentIndex == 0) {
                                                 pageList.currentIndex = 1;
                                             }
                                         } else {
-                                            root.showFavorites = plasmoid.configuration.showFavorites;
-                                            root.startIndex = 1 //<> (showFavorites && plasmoid.configuration.startOnFavorites) ? 0 : 1
+                                            root.startIndex = 1
                                         }
                                     }
                                 }
