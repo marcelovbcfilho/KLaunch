@@ -45,7 +45,7 @@ Item {
 
     function openActionMenu(x, y) {
         var actionList = hasActionList ? model.actionList : [];
-        Tools.fillActionMenu(i18n, actionMenu, model.actionList);
+        Tools.fillActionMenu(actionMenu, model.actionList);
         actionMenu.visualParent = item;
         actionMenu.open(x, y);
     }
