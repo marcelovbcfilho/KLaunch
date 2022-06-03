@@ -74,15 +74,6 @@ Item {
         source: model.decoration
     }
 
-    Rectangle {
-        color: colorWithAlpha(theme.backgroundColor, 0.2)
-        width: label.implicitWidth + units.smallSpacing*2 > cellSizeWidth ? cellSizeWidth : label.implicitWidth + units.smallSpacing*2 // + units.smallSpacing*2 > iconSize ? label.implicitWidth + units.smallSpacing*2 : iconSize
-        height: label.height
-        anchors.centerIn: label
-        visible: showLabel && plasmoid.configuration.showBackLabels
-        radius: 6        
-    }
-
     ToolTip {
         parent: icon
         visible: item.GridView.isCurrentItem && model.description

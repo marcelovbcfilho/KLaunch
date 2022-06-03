@@ -46,7 +46,6 @@ Kirigami.FormLayout {
     property alias cfg_numberColumns:           numberColumns.value
     property alias cfg_numberRows:              numberRows.value
     property alias cfg_scrollAnimationDuration: scrollAnimationDuration.value
-    property alias cfg_showBackLabels:          showBackLabels.checked
     property alias cfg_showRoundedCorners:      showRoundedCorners.checked
 
 
@@ -200,17 +199,6 @@ Kirigami.FormLayout {
             minimumValue: 10
             maximumValue: 128
             stepSize: 4
-        }
-    }
-
-    RowLayout{
-        Layout.fillWidth: true
-        Label {
-            text: i18n("Background labels:")
-            Layout.minimumWidth: 200
-        }
-        CheckBox{
-            id: showBackLabels
         }
     }
 
