@@ -388,8 +388,6 @@ Kicker.DashboardWindow {
                                 cellWidth:  cellSizeWidth
                                 cellHeight: cellSizeHeight
 
-                                dragEnabled: index == 0
-
                                 model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(0).modelForRow(index)
                                 onCurrentIndexChanged: {
                                     if (currentIndex != -1 && !searching) {
