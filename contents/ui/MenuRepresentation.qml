@@ -298,6 +298,7 @@ Kicker.DashboardWindow {
                     PlasmaCore.IconItem {
                         id: searchFieldIconItem
 
+                        colorGroup: PlasmaCore.Theme.ComplementaryColorGroup
                         anchors.verticalCenter: parent.verticalCenter
                         source: "search"
                         visible: runnerModel.query.length == 0
