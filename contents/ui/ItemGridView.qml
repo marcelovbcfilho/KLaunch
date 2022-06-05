@@ -84,7 +84,6 @@ FocusScope {
     onFocusChanged: {
         if (!focus)
             currentIndex = -1;
-
     }
 
     ActionMenu {
