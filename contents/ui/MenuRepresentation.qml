@@ -56,7 +56,7 @@ Kicker.DashboardWindow {
             paginationBar.model = rootModel.modelForRow(0);
         }
         searchField.text = "";
-        searchField.focus = true;
+        pageListScrollArea.focus = true;
         pageList.currentIndex = startIndex;
         pageList.positionViewAtIndex(pageList.currentIndex, ListView.Contain);
         pageList.currentItem.itemGrid.currentIndex = -1;
@@ -88,9 +88,9 @@ Kicker.DashboardWindow {
         pageList.model = rootModel.modelForRow(0);
         paginationBar.model = rootModel.modelForRow(0);
         searchField.text = "";
+        pageListScrollArea.focus = true;
         pageList.currentIndex = startIndex;
         kicker.reset.connect(reset);
-        searchField.focus = true;
     }
 
     mainItem: Rectangle {
@@ -255,7 +255,6 @@ Kicker.DashboardWindow {
                             text = text + newText;
                         }
 
-                        focus: true
                         width: units.gridUnit * 14
                         font.pointSize: Math.ceil(dummyHeading.font.pointSize) + 3
                         onTextChanged: {
@@ -331,6 +330,7 @@ Kicker.DashboardWindow {
                 ScrollView {
                     id: pageListScrollArea
 
+                    focus: true
                     width: parent.width
                     height: parent.height
                     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
@@ -366,9 +366,11 @@ Kicker.DashboardWindow {
                             }
                             // Give old values to next grid if we changed
                             if (oldItem != pageList.currentItem && activate) {
-                                pageList.currentItem.itemGrid.hoverEnabled = false;
+                                pageList.currentItem.itemGrid.hoverEnabled = true;
                                 pageList.currentItem.itemGrid.tryActivate(lastRow, next ? 0 : gridNumCols - 1);
                             }
+
+                            pageListScrollArea.focus = true;
                         }
 
                         anchors.fill: parent
@@ -396,13 +398,6 @@ Kicker.DashboardWindow {
                                 var itemIndex = indexAt(pos.x, pos.y);
                                 currentIndex = itemIndex;
                             }
-                        }
-                        onMovingChanged: {
-                            if (!moving)
-                                // Counter the case where mouse hovers over another grid as
-                                // flick ends, causing loss of focus on flicked in grid
-                                currentItem.itemGrid.focus = true;
-
                         }
 
                         highlight: Component {
@@ -446,7 +441,6 @@ Kicker.DashboardWindow {
                                 model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(0).modelForRow(index)
                                 onCurrentIndexChanged: {
                                     if (currentIndex != -1 && !searching) {
-                                        pageListScrollArea.focus = true;
                                         focus = true;
                                     }
                                 }
