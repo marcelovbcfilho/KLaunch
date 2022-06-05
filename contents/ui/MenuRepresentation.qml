@@ -257,6 +257,7 @@ Kicker.DashboardWindow {
 
                         width: units.gridUnit * 14
                         font.pointSize: Math.ceil(dummyHeading.font.pointSize) + 3
+                        color: "white"
                         onTextChanged: {
                             runnerModel.query = text;
                         }
@@ -302,7 +303,6 @@ Kicker.DashboardWindow {
                         visible: runnerModel.query.length == 0
                         width: searchField.height
                         height: searchField.height / 2
-                        usesPlasmaTheme: false
                     }
 
                     Label {
