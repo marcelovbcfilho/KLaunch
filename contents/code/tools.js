@@ -24,6 +24,16 @@ function fillActionMenu(actionMenu, actionList) {
     // Accessing actionList can be a costly operation, so we don't
     // access it until we need the menu.
 
+    var runWithDiscreteGpuAction = {};
+
+    runWithDiscreteGpuAction.text = "Run with discrete gpu";
+    runWithDiscreteGpuAction.icon = "emblem-system-symbolic";
+    runWithDiscreteGpuAction.actionId = "_run_with_discrete_gpu";
+
+    actionList.unshift(runWithDiscreteGpuAction)
+
+    console.error("AQUIII!!!!!")
+
     if (actionList && actionList.length > 0) {
         var separator = { "type": "separator" };
         actionList.unshift(separator);
@@ -34,6 +44,20 @@ function fillActionMenu(actionMenu, actionList) {
 
 function triggerAction(plasmoid, model, index, actionId, actionArgument) {
     var closeRequested = model.trigger(index, actionId, actionArgument);
+
+    if (actionId !== null && actionId.startsWith("_run_with_discrete_gpu")) {
+        Object.keys(model).forEach((prop)=> console.error(prop));
+        // console.error(model.data)
+        console.error(model.objectName);
+        console.error(model.flags);
+        console.error(model.trigger);
+        console.error(closeRequested);
+        console.error(index)
+        console.error("RODANDO COM GPU DISCRETA")
+        Object.keys(plasmoid).forEach((prop)=> console.error(prop))
+
+        model.trigger(index, "", ["export __GLX_VENDOR_LIBRARY_NAME=nvidia", "export __NV_PRIME_RENDER_OFFLOAD=1"])
+    }
 
     if (closeRequested) {
         plasmoid.expanded = false;

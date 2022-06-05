@@ -19,87 +19,92 @@
 
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
-import org.kde.plasma.plasmoid 2.0
-
-import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
-
+import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.private.kicker 0.1 as Kicker
 
 Item {
     id: kicker
 
-    anchors.fill: parent
-
-    signal reset
-
     property bool isDash: false
-
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
-
-    Plasmoid.compactRepresentation: null
-    Plasmoid.fullRepresentation: compactRepresentation
-
     property Item dragSource: null
 
+    signal reset()
 
     function action_menuedit() {
         processRunner.runMenuEditor();
     }
 
+    function resetDragSource() {
+        dragSource = null;
+    }
+
+    anchors.fill: parent
+    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    Plasmoid.compactRepresentation: null
+    Plasmoid.fullRepresentation: compactRepresentation
+    Component.onCompleted: {
+        plasmoid.setAction("menuedit", i18n("Edit Applications..."));
+        rootModel.refreshed.connect(reset);
+        dragHelper.dropped.connect(resetDragSource);
+    }
+
     Component {
         id: compactRepresentation
-        CompactRepresentation {}
+
+        CompactRepresentation {
+        }
+
     }
 
     Component {
         id: menuRepresentation
-        MenuRepresentation {}
+
+        MenuRepresentation {
+        }
+
     }
 
     Kicker.RootModel {
         id: rootModel
 
         autoPopulate: false
-
         appNameFormat: plasmoid.configuration.appNameFormat
         flat: true
         sorted: true
         showSeparators: false
         appletInterface: plasmoid
-
         paginate: true
         showAllApps: true
         showRecentApps: false
         showRecentDocs: false
         showRecentContacts: false
         showPowerSession: false
-
         Component.onCompleted: {
             rootModel.refresh();
         }
     }
 
     Connections {
-        target: plasmoid.configuration
-
         function onHiddenApplicationsChanged() {
             // Force refresh on hidden
             rootModel.refresh();
         }
+
+        target: plasmoid.configuration
     }
 
     Kicker.RunnerModel {
         id: runnerModel
+
         runners: {
-                    var runners = ["services", "krunner_systemsettings"]
+            var runners = ["services", "krunner_systemsettings"];
+            if (plasmoid.configuration.useExtraRunners)
+                runners = runners.concat(plasmoid.configuration.extraRunners);
 
-                    if (plasmoid.configuration.useExtraRunners) {
-                        runners = runners.concat(plasmoid.configuration.extraRunners);
-                    }
-
-                    return runners;
-                }
+            return runners;
+        }
         appletInterface: plasmoid
         deleteWhenEmpty: false
     }
@@ -109,55 +114,45 @@ Item {
     }
 
     Kicker.ProcessRunner {
-        id: processRunner;
+        id: processRunner
     }
 
     PlasmaCore.FrameSvgItem {
-        id : highlightItemSvg
+        id: highlightItemSvg
 
         visible: false
-
         imagePath: "widgets/viewitem"
         prefix: "hover"
     }
 
     PlasmaCore.FrameSvgItem {
-        id : panelSvg
+        id: panelSvg
 
         visible: false
-
         imagePath: "widgets/panel-background"
     }
 
     PlasmaComponents.Label {
         id: toolTipDelegate
 
-        width: contentWidth
-        height: contentHeight
-
         property Item toolTip
 
+        width: contentWidth
+        height: contentHeight
         text: (toolTip != null) ? toolTip.text : ""
     }
 
     PlasmaCore.DataSource {
         id: pmEngine
+
+        function performOperation(what) {
+            var service = serviceForSource("PowerDevil");
+            var operation = service.operationDescription(what);
+            service.startOperationCall(operation);
+        }
+
         engine: "powermanagement"
         connectedSources: ["PowerDevil", "Sleep States"]
-        function performOperation(what) {
-            var service = serviceForSource("PowerDevil")
-            var operation = service.operationDescription(what)
-            service.startOperationCall(operation)
-        }
     }
 
-    function resetDragSource() {
-        dragSource = null;
-    }
-
-    Component.onCompleted: {
-        plasmoid.setAction("menuedit", i18n("Edit Applications..."));
-        rootModel.refreshed.connect(reset);
-        dragHelper.dropped.connect(resetDragSource);
-    }
 }

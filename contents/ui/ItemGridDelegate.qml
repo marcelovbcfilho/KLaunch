@@ -17,31 +17,22 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
+import "../code/tools.js" as Tools
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.kquickcontrolsaddons 2.0
-
-import "../code/tools.js" as Tools
+import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasmoid 2.0
 
 Item {
     id: item
 
-    width: GridView.view.cellWidth
-    height: GridView.view.cellHeight
-
     property bool showLabel: true
-
     readonly property int itemIndex: model.index
     readonly property url url: model.url != undefined ? model.url : ""
     property bool pressed: false
     readonly property bool hasActionList: (("hasActionList" in model) && (model.hasActionList == true))
-
-    Accessible.role: Accessible.MenuItem
-    Accessible.name: model.display
 
     function openActionMenu(x, y) {
         var actionList = hasActionList ? model.actionList : [];
@@ -54,17 +45,35 @@ Item {
         return Tools.triggerAction(plasmoid, GridView.view.model, model.index, actionId, actionArgument);
     }
 
-    Rectangle{
+    width: GridView.view.cellWidth
+    height: GridView.view.cellHeight
+    Accessible.role: Accessible.MenuItem
+    Accessible.name: model.display
+    Keys.onPressed: {
+        if (event.key == Qt.Key_Menu && hasActionList) {
+            event.accepted = true;
+            openActionMenu(item);
+        } else if ((event.key == Qt.Key_Enter || event.key == Qt.Key_Return)) {
+            event.accepted = true;
+            GridView.view.model.trigger(index, "", null);
+            root.toggle();
+        }
+    }
+
+    Rectangle {
         id: box
+
         height: parent.height
-        width:  parent.width
+        width: parent.width
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        color:"transparent"
+        color: "transparent"
     }
+
     PlasmaCore.IconItem {
         id: icon
-        y: iconSize*0.2
+
+        y: iconSize * 0.2
         anchors.horizontalCenter: box.horizontalCenter
         anchors.verticalCenter: !showLabel ? box.verticalCenter : undefined
         width: iconSize
@@ -82,7 +91,14 @@ Item {
 
     PlasmaComponents.Label {
         id: label
+
         visible: showLabel
+        horizontalAlignment: Text.AlignHCenter
+        color: "white"
+        elide: Text.ElideRight
+        wrapMode: Text.NoWrap
+        text: model.display
+
         anchors {
             top: icon.bottom
             topMargin: units.smallSpacing
@@ -92,23 +108,6 @@ Item {
             rightMargin: highlightItemSvg.margins.right
         }
 
-        horizontalAlignment: Text.AlignHCenter
-
-        elide: Text.ElideRight
-        wrapMode: Text.NoWrap
-        text: model.display
     }
 
-
-    Keys.onPressed: {
-        if (event.key == Qt.Key_Menu && hasActionList) {
-            event.accepted = true;
-            openActionMenu(item);
-        } else if ((event.key == Qt.Key_Enter || event.key == Qt.Key_Return)) {
-            event.accepted = true;
-            GridView.view.model.trigger(index, "", null);
-            root.toggle();
-
-        }
-    }
 }

@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 import QtQuick 2.0
-
 import org.kde.plasma.components 2.0 as PlasmaComponents
 
 Item {
@@ -31,39 +30,26 @@ Item {
     property bool opened: menu ? (menu.status != PlasmaComponents.DialogStatus.Closed) : false
 
     signal actionClicked(string actionId, variant actionArgument)
-    signal closed
-
-    onActionListChanged: refreshMenu();
-
-    onOpenedChanged: {
-        if (!opened) {
-            closed();
-        }
-    }
+    signal closed()
 
     function open(x, y) {
-        if (!actionList) {
-            return;
-        }
+        if (!actionList)
+            return ;
 
-        if (x && y) {
+        if (x && y)
             menu.open(x, y);
-        } else {
+        else
             menu.open();
-        }
     }
 
     function refreshMenu() {
-        if (menu) {
+        if (menu)
             menu.destroy();
-        }
 
-        if (!actionList) {
-            return;
-        }
+        if (!actionList)
+            return ;
 
         menu = contextMenuComponent.createObject(root);
-
         fillMenu(menu, actionList);
     }
 
@@ -71,20 +57,22 @@ Item {
         items.forEach(function(actionItem) {
             if (actionItem.subActions) {
                 // This is a menu
-                var submenuItem = contextSubmenuItemComponent.createObject(
-                                          menu, { "actionItem" : actionItem });
-
+                var submenuItem = contextSubmenuItemComponent.createObject(menu, {
+                    "actionItem": actionItem
+                });
                 fillMenu(submenuItem.submenu, actionItem.subActions);
-
             } else {
-                var item = contextMenuItemComponent.createObject(
-                                menu,
-                                {
-                                    "actionItem": actionItem,
-                                }
-                );
+                var item = contextMenuItemComponent.createObject(menu, {
+                    "actionItem": actionItem
+                });
             }
         });
+    }
+
+    onActionListChanged: refreshMenu()
+    onOpenedChanged: {
+        if (!opened)
+            closed();
 
     }
 
@@ -94,6 +82,7 @@ Item {
         PlasmaComponents.ContextMenu {
             visualParent: root.visualParent
         }
+
     }
 
     Component {
@@ -103,17 +92,19 @@ Item {
             id: submenuItem
 
             property variant actionItem
+            property variant submenu: submenu_
 
             text: actionItem.text ? actionItem.text : ""
             icon: actionItem.icon ? actionItem.icon : null
 
-            property variant submenu : submenu_
-
             PlasmaComponents.ContextMenu {
                 id: submenu_
+
                 visualParent: submenuItem.action
             }
+
         }
+
     }
 
     Component {
@@ -122,17 +113,18 @@ Item {
         PlasmaComponents.MenuItem {
             property variant actionItem
 
-            text      : actionItem.text ? actionItem.text : ""
-            enabled   : actionItem.type != "title" && ("enabled" in actionItem ? actionItem.enabled : true)
-            separator : actionItem.type == "separator"
-            section   : actionItem.type == "title"
-            icon      : actionItem.icon ? actionItem.icon : null
-            checkable : actionItem.checkable ? actionItem.checkable : false
-            checked   : actionItem.checked ? actionItem.checked : false
-
+            text: actionItem.text ? actionItem.text : ""
+            enabled: actionItem.type != "title" && ("enabled" in actionItem ? actionItem.enabled : true)
+            separator: actionItem.type == "separator"
+            section: actionItem.type == "title"
+            icon: actionItem.icon ? actionItem.icon : null
+            checkable: actionItem.checkable ? actionItem.checkable : false
+            checked: actionItem.checked ? actionItem.checked : false
             onClicked: {
                 actionClicked(actionItem.actionId, actionItem.actionArgument);
             }
         }
+
     }
+
 }
