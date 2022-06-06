@@ -50,6 +50,10 @@ Kicker.DashboardWindow {
         return Qt.rgba(color.r, color.g, color.b, alpha);
     }
 
+    function colorWithAlphaDark(color, alpha) {
+        return Qt.darker(colorWithAlpha(color, alpha));
+    }
+
     function reset() {
         if (!searching) {
             pageList.model = rootModel.modelForRow(0);
@@ -95,7 +99,7 @@ Kicker.DashboardWindow {
 
     mainItem: Rectangle {
         anchors.fill: parent
-        color: 'transparent'
+        color: colorWithAlphaDark(theme.highlightColor, plasmoid.configuration.backgroundOpacity / 100)
 
         ScaleAnimator {
             id: animationSearch
