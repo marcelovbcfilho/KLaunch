@@ -46,17 +46,11 @@ function triggerAction(plasmoid, model, index, actionId, actionArgument) {
     var closeRequested = model.trigger(index, actionId, actionArgument);
 
     if (actionId !== null && actionId.startsWith("_run_with_discrete_gpu")) {
-        Object.keys(model).forEach((prop)=> console.error(prop));
-        // console.error(model.data)
-        console.error(model.objectName);
-        console.error(model.flags);
-        console.error(model.trigger);
-        console.error(closeRequested);
-        console.error(index)
-        console.error("RODANDO COM GPU DISCRETA")
         Object.keys(plasmoid).forEach((prop)=> console.error(prop))
 
-        model.trigger(index, "", ["export __GLX_VENDOR_LIBRARY_NAME=nvidia", "export __NV_PRIME_RENDER_OFFLOAD=1"])
+        // Required variable to run with discrete GPU, but don't know how to set them before execute the program.
+        // export __GLX_VENDOR_LIBRARY_NAME=nvidia && export __NV_PRIME_RENDER_OFFLOAD=1
+        model.trigger(index, "", null)
     }
 
     if (closeRequested) {
